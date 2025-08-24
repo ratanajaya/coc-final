@@ -8,10 +8,6 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Apparently MDS has several inconsistent primary color
-        'mds': '#EA1C2D', //taken from the MDS logo
-        'mds-pattern': '#E2002B', //taken from the MDS login pattern image
-        'mds-com': '#EB0029', //taken from MDS logo in www.matahari.com
       }
     },
     fontSize: {

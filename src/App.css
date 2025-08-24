@@ -1,0 +1,132 @@
+/* Game-like styling */
+.game-container {
+  background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+  border: 3px solid #4a90e2;
+  box-shadow: 
+    0 0 30px rgba(74, 144, 226, 0.3),
+    inset 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.game-title {
+  color: #e2e8f0;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+.difficulty-button {
+  background: linear-gradient(145deg, #2d3748, #4a5568);
+  border: 2px solid #4a90e2;
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.difficulty-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 6px 12px rgba(0, 0, 0, 0.4),
+    0 0 15px rgba(74, 144, 226, 0.4);
+}
+
+.difficulty-button.active {
+  background: linear-gradient(145deg, #4a90e2, #357abd);
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 0 10px rgba(74, 144, 226, 0.3),
+    0 0 20px rgba(74, 144, 226, 0.5);
+}
+
+.game-board {
+  background: linear-gradient(145deg, #2d3748, #1a202c);
+  border: 2px solid #4a90e2;
+  border-radius: 12px;
+  box-shadow: 
+    0 8px 16px rgba(0, 0, 0, 0.4),
+    inset 0 0 20px rgba(74, 144, 226, 0.1);
+  padding: 20px;
+}
+
+.target-display {
+  background: linear-gradient(145deg, #744210, #975a16);
+  border: 2px solid #f6e05e;
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.3),
+    inset 0 0 10px rgba(246, 224, 94, 0.2),
+    0 0 15px rgba(246, 224, 94, 0.3);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  border-radius: 8px;
+  padding: 8px 16px;
+}
+
+.game-cell {
+  background: linear-gradient(145deg, #f7fafc, #e2e8f0);
+  border: 2px solid #a0aec0;
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transition: all 0.15s ease;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.game-cell:hover {
+  transform: translateY(-1px);
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.3),
+    0 0 10px rgba(74, 144, 226, 0.3);
+  border-color: #4a90e2;
+}
+
+.game-cell.selected {
+  background: linear-gradient(145deg, #38a169, #2f855a);
+  border-color: #68d391;
+  color: white;
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.3),
+    inset 0 0 10px rgba(104, 211, 145, 0.3),
+    0 0 15px rgba(104, 211, 145, 0.5);
+}
+
+.instructions-panel {
+  background: linear-gradient(145deg, #2d3748, #1a202c);
+  border: 2px solid #4a90e2;
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.3),
+    inset 0 0 10px rgba(74, 144, 226, 0.1);
+}
+
+.debug-button {
+  background: linear-gradient(145deg, #4a5568, #2d3748);
+  border: 1px solid #4a90e2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+.debug-button:hover {
+  background: linear-gradient(145deg, #2d3748, #4a5568);
+  box-shadow: 0 0 10px rgba(74, 144, 226, 0.4);
+}
+
+.debug-panel {
+  background: linear-gradient(145deg, #2d3748, #1a202c);
+  border: 2px solid #4a90e2;
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.3),
+    inset 0 0 10px rgba(74, 144, 226, 0.1);
+}
+
+.congrats-overlay {
+  background: linear-gradient(135deg, rgba(56, 161, 105, 0.6), rgba(47, 133, 90, 0.6));
+  backdrop-filter: blur(4px);
+  box-shadow: 
+    inset 0 0 30px rgba(104, 211, 145, 0.3),
+    0 0 40px rgba(104, 211, 145, 0.5);
+  animation: pulse 0.5s ease-in-out;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.02); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}

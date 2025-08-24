@@ -53,11 +53,11 @@ function App() {
   }, [selectedCells]);
 
   return (
-    <div className=' min-h-dvh w-dvw flex justify-center items-center bg-stone-800 pt-2 pb-2'>
-      <div className=' bg-stone-600 h-full flex flex-col justify-center w-full max-w-screen-sm rounded-md'>
-        <div className=' text-2xl text-center text-white font-bold mb-2 mt-3'>COC Final Game</div>
+    <div className='min-h-dvh w-dvw flex justify-center items-center bg-gradient-to-br from-gray-900 via-blue-900 to-gray-800 pt-2 pb-2'>
+      <div className='game-container h-full flex flex-col justify-center w-full max-w-screen-sm rounded-xl'>
+        <div className='game-title text-2xl text-center font-bold mb-4 mt-4'>COC Final Game</div>
         <div className=' flex-1'>
-          <div className="flex justify-center gap-4 mb-4">
+          <div className="flex justify-center gap-4 mb-6">
             {constant.difficulties.map((diff) => (
               <button
                 key={diff.label}
@@ -66,10 +66,10 @@ function App() {
                     ...diff
                   })
                 )}
-                className={`px-4 py-2 text-white rounded font-semibold transition-colors ${
+                className={`difficulty-button px-4 py-2 text-white rounded-lg font-bold transition-all ${
                   boardSetting.row === diff.row && boardSetting.col === diff.col 
-                    ? 'bg-blue-600 hover:bg-blue-700' 
-                    : 'bg-gray-600 hover:bg-gray-700'
+                    ? 'active' 
+                    : ''
                 }`}
               >
                 {diff.label}
@@ -77,15 +77,15 @@ function App() {
             ))}
           </div>
           
-          <div className="mt-4 p-4 flex flex-col items-center relative">
+          <div className="mt-6 p-6 flex flex-col items-center relative">
             {showCongrats && (
-              <div className="absolute inset-0 bg-green-600/60 flex items-center justify-center rounded-md z-10">
-                <h2 className="text-white text-4xl font-bold">Correct!</h2>
+              <div className="congrats-overlay absolute inset-0 flex items-center justify-center rounded-xl z-10">
+                <h2 className="text-white text-5xl font-bold drop-shadow-lg">Correct!</h2>
               </div>
             )}
-            <h3 className="text-white text-xl mb-2 text-center">
+            <div className="target-display text-white text-lg mb-4 text-center font-bold">
               Target: {target.value}
-            </h3>
+            </div>
             <div
               className="grid gap-1 w-fit"
               style={{ 
@@ -98,10 +98,9 @@ function App() {
                   return (
                     <div
                       key={`${rowIndex}-${colIndex}`}
-                      className={`
-                        w-10 h-10 flex items-center justify-center text-sm font-bold rounded hover:cursor-pointer
-                        ${isSelected ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-800'}
-                      `}
+                      className={`game-cell w-11 h-11 flex items-center justify-center rounded-lg cursor-pointer ${
+                        isSelected ? 'selected' : ''
+                      }`}
                       onClick={() => {
                         if (isSelected) {
                           setSelectedCells(selectedCells.filter(c => !(c.row === rowIndex && c.col === colIndex)));
@@ -119,58 +118,64 @@ function App() {
           </div>
         </div>
 
-        <div className="px-4 pb-4">
-          <div className="bg-stone-700 text-white p-3 rounded-md text-sm">
-            <p className="text-xs text-gray-300 italic text-center mb-2">
-              Inspired by the final game in Clash of Champions Season 2
+        <div className="px-6 pb-6">
+          <div className="instructions-panel text-white p-4 rounded-xl text-sm">
+            <p className="text-center text-base">
+              <span className="font-bold text-yellow-400 text-lg mb-3">⚡</span> Select sequential cells (horizontal, vertical, or diagonal) that sum up to the target value
             </p>
-            <p className="text-center">
-              <span className="font-semibold text-yellow-400">?</span> Select sequential cells (horizontal, vertical, or diagonal) that sum up to the target value
+            <p className=" text-blue-300 italic text-center">
+              Inspired by the final game in Clash of Champions Season 2
             </p>
           </div>
         </div>
 
-        <div>
+        <div className="px-6 pb-4">
           <button
             onClick={() => setShowDebugPanel(!showDebugPanel)}
-            className="mb-2 px-3 py-1 text-sm text-white bg-gray-700 hover:bg-gray-600 rounded transition-colors"
+            className="debug-button mb-3 px-4 py-2 text-sm text-white rounded-lg transition-all font-semibold"
           >
             {showDebugPanel ? 'Hide' : 'Show'} Debug Panel
           </button>
           
           {showDebugPanel && (
-            <div className="bg-gray-700 text-white p-3 rounded text-sm">
-              <div className="mb-2">
-                <span className="font-semibold">Selected Sum: </span>
-                {selectedCells.reduce((sum, cell) => {
-                  if (boardArr[cell.row] && boardArr[cell.row][cell.col] !== undefined) {
-                    return sum + boardArr[cell.row][cell.col];
-                  }
-                  return sum;
-                }, 0)}
+            <div className="debug-panel text-white p-4 rounded-xl text-sm">
+              <div className="mb-3">
+                <span className="font-bold text-blue-300">Selected Sum: </span>
+                <span className="text-yellow-300 font-semibold">
+                  {selectedCells.reduce((sum, cell) => {
+                    if (boardArr[cell.row] && boardArr[cell.row][cell.col] !== undefined) {
+                      return sum + boardArr[cell.row][cell.col];
+                    }
+                    return sum;
+                  }, 0)}
+                </span>
               </div>
-              <div className="mb-2">
-                <span className="font-semibold">Selected Cells: </span>
-                {selectedCells.length > 0 
-                  ? selectedCells.map(pos => `(${pos.row},${pos.col})`).join(', ')
-                  : '-'
-                }
+              <div className="mb-3">
+                <span className="font-bold text-blue-300">Selected Cells: </span>
+                <span className="text-green-300">
+                  {selectedCells.length > 0 
+                    ? selectedCells.map(pos => `(${pos.row},${pos.col})`).join(', ')
+                    : '-'
+                  }
+                </span>
               </div>
 
-              <div className="mb-2">
-                <span className="font-semibold">Target: </span>
-                {target.value}
+              <div className="mb-3">
+                <span className="font-bold text-blue-300">Target: </span>
+                <span className="text-yellow-300 font-semibold">{target.value}</span>
               </div>
-              <div className="mb-2">
-                <span className="font-semibold">Target Direction: </span>
-                {target.direction ?? '-'}
+              <div className="mb-3">
+                <span className="font-bold text-blue-300">Target Direction: </span>
+                <span className="text-purple-300">{target.direction ?? '-'}</span>
               </div>
               <div>
-                <span className="font-semibold">Solution Cells: </span>
-                {target.solutionPositions.length > 0 
-                  ? target.solutionPositions.map(pos => `(${pos.row},${pos.col})`).join(', ')
-                  : '-'
-                }
+                <span className="font-bold text-blue-300">Solution Cells: </span>
+                <span className="text-orange-300">
+                  {target.solutionPositions.length > 0 
+                    ? target.solutionPositions.map(pos => `(${pos.row},${pos.col})`).join(', ')
+                    : '-'
+                  }
+                </span>
               </div>
             </div>
           )}
