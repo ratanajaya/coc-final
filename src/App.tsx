@@ -1,15 +1,8 @@
 import { useEffect, useState } from 'react';
 
-import 'assets/css/antdOverride.css';
+import './App.css';
 import util from 'utils/util';
-
-interface BoardSetting {
-  row: number;
-  col: number;
-  floorVal: number;
-  ceilVal: number;
-  bias: number; // (−1<x<1,x∈R)
-}
+import { BoardSetting, Target } from 'utils/types';
 
 const difficulties = [
   { label: 'Easy', row: 5, col: 5 },
@@ -22,12 +15,20 @@ function App() {
     row: 5, col: 5, floorVal: -20, ceilVal: 20, bias: 0.3
   });
   const [boardArr, setBoardArr] = useState<number[][]>([]);
+  const [target, setTarget] = useState<Target>({ value: 0, solutionPositions: [] });
+
   const [selectedCells, setSelectedCells] = useState<{ row: number; col: number }[]>([]);
+  const [showDebugPanel, setShowDebugPanel] = useState<boolean>(false);
 
   function resetGame() {
     setSelectedCells([]);
     const boardArr = util.generateGameBoardWithBias(boardSetting.row, boardSetting.col, boardSetting.floorVal, boardSetting.ceilVal, boardSetting.bias);
+    const target = util.getTarget(boardArr);
+
     setBoardArr(boardArr);
+    setTarget(target);
+
+    console.log('target', target);
   }
 
   useEffect(() => {
@@ -62,7 +63,7 @@ function App() {
           
           <div className="mt-4 p-4 flex flex-col items-center">
             <h3 className="text-white text-xl mb-2 text-center">
-              Game Board
+              Target: {target.value}
             </h3>
             <div
               className="grid gap-1 w-fit"
@@ -95,6 +96,43 @@ function App() {
               )}
             </div>
           </div>
+        </div>
+
+        <div>
+          <button
+            onClick={() => setShowDebugPanel(!showDebugPanel)}
+            className="mb-2 px-3 py-1 text-sm text-white bg-gray-700 hover:bg-gray-600 rounded transition-colors"
+          >
+            {showDebugPanel ? 'Hide' : 'Show'} Debug Panel
+          </button>
+          
+          {showDebugPanel && (
+            <div className="bg-gray-700 text-white p-3 rounded text-sm">
+              <div className="mb-2">
+                <span className="font-semibold">Selected Sum: </span>
+                {selectedCells.reduce((sum, cell) => {
+                  if (boardArr[cell.row] && boardArr[cell.row][cell.col] !== undefined) {
+                    return sum + boardArr[cell.row][cell.col];
+                  }
+                  return sum;
+                }, 0)}
+              </div>
+              <div className="mb-2">
+                <span className="font-semibold">Selected Cells: </span>
+                {selectedCells.length > 0 
+                  ? selectedCells.map(pos => `(${pos.row},${pos.col})`).join(', ')
+                  : '-'
+                }
+              </div>
+              <div>
+                <span className="font-semibold">Solution Cells: </span>
+                {target.solutionPositions.length > 0 
+                  ? target.solutionPositions.map(pos => `(${pos.row},${pos.col})`).join(', ')
+                  : '-'
+                }
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
