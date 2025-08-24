@@ -3,12 +3,7 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import util from 'utils/util';
 import { BoardSetting, Target } from 'utils/types';
-
-const difficulties = [
-  { label: 'Easy', row: 5, col: 5, florVal: -20, ceilVal: 20, bias: 0.3 },
-  { label: 'Medium', row: 8, col: 6, florVal: -30, ceilVal: 30, bias: 0.2 },
-  { label: 'Hard', row: 10, col: 7, florVal: -40, ceilVal: 40, bias: 0.1 },
-]
+import constant from 'utils/constant';
 
 function App() {
   const [boardSetting, setBoardSetting] = useState<BoardSetting>({ 
@@ -48,7 +43,7 @@ function App() {
       }
       return sum;
     }, 0);
-    if (selectedSum === target.value && target.solutionPositions.length > 0) {
+    if (selectedCells.length > 0 && selectedSum === target.value) {
       setShowCongrats(true);
       setTimeout(() => {
         setShowCongrats(false);
@@ -58,12 +53,12 @@ function App() {
   }, [selectedCells]);
 
   return (
-    <div className=' h-dvh w-dvw flex justify-center items-center bg-stone-800 pt-2 pb-2'>
+    <div className=' min-h-dvh w-dvw flex justify-center items-center bg-stone-800 pt-2 pb-2'>
       <div className=' bg-stone-600 h-full flex flex-col justify-center w-full max-w-screen-sm rounded-md'>
         <div className=' text-2xl text-center text-white font-bold mb-2 mt-3'>COC Final Game</div>
         <div className=' flex-1'>
           <div className="flex justify-center gap-4 mb-4">
-            {difficulties.map((diff) => (
+            {constant.difficulties.map((diff) => (
               <button
                 key={diff.label}
                 onClick={() => setBoardSetting(prev =>({ 
@@ -121,6 +116,17 @@ function App() {
               })
               )}
             </div>
+          </div>
+        </div>
+
+        <div className="px-4 pb-4">
+          <div className="bg-stone-700 text-white p-3 rounded-md text-sm">
+            <p className="text-xs text-gray-300 italic text-center mb-2">
+              Inspired by the final game in Clash of Champions Season 2
+            </p>
+            <p className="text-center">
+              <span className="font-semibold text-yellow-400">?</span> Select sequential cells (horizontal, vertical, or diagonal) that sum up to the target value
+            </p>
           </div>
         </div>
 
