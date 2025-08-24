@@ -45,35 +45,71 @@ const util = {
     const midCol = Math.floor(colLen / 2);
 
     // directions: vertical, horizontal, diagonal-up, diagonal-down
-    //const dirSeed = Math.random();
-    const dirSeed = 0.2; // for testing
+    const dirSeed = Math.random();
+    //const dirSeed = 0.78; // for testing
     const direction = dirSeed < 0.25 ? 'vertical'
       : dirSeed < 0.5 ? 'horizontal'
       : dirSeed < 0.75 ? 'diagonal-up'
       : 'diagonal-down';
 
-    const target = (() => {
-      let targetValue = 0;
-      const solutionPositions = [] as { row: number; col: number }[];
-      if(direction === 'vertical') {
-        // solution length should be betweeen midRow and rowLen (inclusive)
-        const solutionLen = Math.floor(Math.random() * (rowLen - midRow + 1)) + midRow;
-        const startRow = Math.floor(Math.random() * (rowLen - solutionLen + 1));
-        const startCol = Math.floor(Math.random() * colLen);
+    let targetValue = 0;
+    const solutionPositions = [] as { row: number; col: number }[];
+    if(direction === 'vertical') {
+      // solution length should be betweeen midRow and rowLen (inclusive)
+      const solutionLen = Math.floor(Math.random() * (rowLen - midRow + 1)) + midRow;
+      const startRow = Math.floor(Math.random() * (rowLen - solutionLen + 1));
+      const startCol = Math.floor(Math.random() * colLen);
 
-        for(let i = 0; i < solutionLen; i++) {
-          targetValue += boardArr[startRow + i][startCol];
-          solutionPositions.push({ row: startRow + i, col: startCol });
-        }
+      for(let i = 0; i < solutionLen; i++) {
+        targetValue += boardArr[startRow + i][startCol];
+        solutionPositions.push({ row: startRow + i, col: startCol });
       }
+    }
+    if(direction === 'horizontal') {
+      // solution length should be betweeen midCol and colLen (inclusive)
+      const solutionLen = Math.floor(Math.random() * (colLen - midCol + 1)) + midCol;
+      const startRow = Math.floor(Math.random() * rowLen);
+      const startCol = Math.floor(Math.random() * (colLen - solutionLen + 1));
 
-      return {
-        value: targetValue,
-        solutionPositions: solutionPositions
-      };
-    })();
+      for(let i = 0; i < solutionLen; i++) {
+        targetValue += boardArr[startRow][startCol + i];
+        solutionPositions.push({ row: startRow, col: startCol + i });
+      }
+    }
+    if(direction === 'diagonal-up') {
+      // solution length should be betweeen min(midRow, midCol) and min(rowLen, colLen) (inclusive)
+      const maxSolutionLen = Math.min(rowLen, colLen);
+      const minSolutionLen = Math.min(midRow, midCol);
+      const solutionLen = Math.floor(Math.random() * (maxSolutionLen - minSolutionLen + 1)) + minSolutionLen;
+      
+      const startRow = Math.floor(Math.random() * (rowLen - (solutionLen - 1))) + (solutionLen - 1);
+      const startCol = Math.floor(Math.random() * (colLen - (solutionLen - 1)));
 
-    return target;
+      for(let i = 0; i < solutionLen; i++) {
+        targetValue += boardArr[startRow - i][startCol + i];
+        solutionPositions.push({ row: startRow - i, col: startCol + i });
+      }
+    }
+    if(direction === 'diagonal-down') {
+      // solution length should be betweeen min(midRow, midCol) and min(rowLen, colLen) (inclusive)
+      const maxSolutionLen = Math.min(rowLen, colLen);
+      const minSolutionLen = Math.min(midRow, midCol);
+      const solutionLen = Math.floor(Math.random() * (maxSolutionLen - minSolutionLen + 1)) + minSolutionLen;
+
+      const startRow = Math.floor(Math.random() * (rowLen - (solutionLen - 1)));
+      const startCol = Math.floor(Math.random() * (colLen - (solutionLen - 1)));
+
+      for(let i = 0; i < solutionLen; i++) {
+        targetValue += boardArr[startRow + i][startCol + i];
+        solutionPositions.push({ row: startRow + i, col: startCol + i });
+      }
+    }
+
+    return {
+      value: targetValue,
+      solutionPositions: solutionPositions,
+      direction: direction
+    };
   }
 }
 

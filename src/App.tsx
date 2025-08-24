@@ -5,17 +5,24 @@ import util from 'utils/util';
 import { BoardSetting, Target } from 'utils/types';
 
 const difficulties = [
-  { label: 'Easy', row: 5, col: 5 },
-  { label: 'Medium', row: 8, col: 6 },
-  { label: 'Hard', row: 10, col: 7 },
+  { label: 'Easy', row: 5, col: 5, florVal: -20, ceilVal: 20, bias: 0.3 },
+  { label: 'Medium', row: 8, col: 6, florVal: -30, ceilVal: 30, bias: 0.2 },
+  { label: 'Hard', row: 10, col: 7, florVal: -40, ceilVal: 40, bias: 0.1 },
 ]
 
 function App() {
   const [boardSetting, setBoardSetting] = useState<BoardSetting>({ 
     row: 5, col: 5, floorVal: -20, ceilVal: 20, bias: 0.3
   });
-  const [boardArr, setBoardArr] = useState<number[][]>([]);
-  const [target, setTarget] = useState<Target>({ value: 0, solutionPositions: [] });
+  const [boardState, setBoardState] = useState<{
+    boardArr: number[][];
+    target: Target;
+  }>({ 
+    boardArr: [],
+    target: { value: 0, solutionPositions: [], direction: null },
+  });
+
+  const { boardArr, target } = boardState;
 
   const [selectedCells, setSelectedCells] = useState<{ row: number; col: number }[]>([]);
   const [showDebugPanel, setShowDebugPanel] = useState<boolean>(false);
@@ -25,20 +32,35 @@ function App() {
     const boardArr = util.generateGameBoardWithBias(boardSetting.row, boardSetting.col, boardSetting.floorVal, boardSetting.ceilVal, boardSetting.bias);
     const target = util.getTarget(boardArr);
 
-    setBoardArr(boardArr);
-    setTarget(target);
-
-    console.log('target', target);
+    setBoardState({ boardArr, target });
   }
 
   useEffect(() => {
     resetGame();
   }, [boardSetting]);
 
+  const [showCongrats, setShowCongrats] = useState(false);
+
+  useEffect(() => {
+    const selectedSum = selectedCells.reduce((sum, cell) => {
+      if (boardArr[cell.row] && boardArr[cell.row][cell.col] !== undefined) {
+        return sum + boardArr[cell.row][cell.col];
+      }
+      return sum;
+    }, 0);
+    if (selectedSum === target.value && target.solutionPositions.length > 0) {
+      setShowCongrats(true);
+      setTimeout(() => {
+        setShowCongrats(false);
+        resetGame();
+      }, 1000);
+    }
+  }, [selectedCells]);
+
   return (
     <div className=' h-dvh w-dvw flex justify-center items-center bg-stone-800 pt-2 pb-2'>
       <div className=' bg-stone-600 h-full flex flex-col justify-center w-full max-w-screen-sm rounded-md'>
-        <div className=' text-2xl text-center text-white font-bold'>COC Grand Final Game</div>
+        <div className=' text-2xl text-center text-white font-bold mb-2 mt-3'>COC Final Game</div>
         <div className=' flex-1'>
           <div className="flex justify-center gap-4 mb-4">
             {difficulties.map((diff) => (
@@ -46,8 +68,7 @@ function App() {
                 key={diff.label}
                 onClick={() => setBoardSetting(prev =>({ 
                     ...prev,
-                    row: diff.row, 
-                    col: diff.col 
+                    ...diff
                   })
                 )}
                 className={`px-4 py-2 text-white rounded font-semibold transition-colors ${
@@ -61,7 +82,12 @@ function App() {
             ))}
           </div>
           
-          <div className="mt-4 p-4 flex flex-col items-center">
+          <div className="mt-4 p-4 flex flex-col items-center relative">
+            {showCongrats && (
+              <div className="absolute inset-0 bg-green-600/60 flex items-center justify-center rounded-md z-10">
+                <h2 className="text-white text-4xl font-bold">Correct!</h2>
+              </div>
+            )}
             <h3 className="text-white text-xl mb-2 text-center">
               Target: {target.value}
             </h3>
@@ -123,6 +149,15 @@ function App() {
                   ? selectedCells.map(pos => `(${pos.row},${pos.col})`).join(', ')
                   : '-'
                 }
+              </div>
+
+              <div className="mb-2">
+                <span className="font-semibold">Target: </span>
+                {target.value}
+              </div>
+              <div className="mb-2">
+                <span className="font-semibold">Target Direction: </span>
+                {target.direction ?? '-'}
               </div>
               <div>
                 <span className="font-semibold">Solution Cells: </span>

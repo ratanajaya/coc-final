@@ -8,5 +8,6 @@ export interface BoardSetting {
 
 export interface Target {
   value: number;
+  direction: string | null;
   solutionPositions: { row: number; col: number }[];
 }
